@@ -1,0 +1,55 @@
+---
+import { getEntry } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const backlog = await getEntry("todo", "backlog");
+
+if (!backlog) {
+  throw new Error("Missing TODO backlog content");
+}
+
+const { groups } = backlog.data;
+---
+
+<BaseLayout title="TODO">
+  <section class="page-heading todo-heading">
+    <p class="eyebrow">work queue // public backlog</p>
+    <h1>TODO</h1>
+    <p>
+      The live queue of things to build, verify, and document. Kept public so
+      unfinished work stays visible.
+    </p>
+  </section>
+
+  <section class="todo-tree-view" aria-label="Project backlog">
+    <div class="tree-content">
+      <p class="tree-root-label">backlog/</p>
+      <ul class="todo-tree">
+        {
+          groups.map((group) => (
+            <li class="group-node">
+              <span class="tree-label">{group.title}/</span>
+              <ul>
+                {group.subgroups.map((subgroup) => (
+                  <li class="subgroup-node">
+                    <span class="tree-label">{subgroup.title}/</span>
+                    <ul>
+                      {subgroup.tasks.map((task) => (
+                        <li class:list={["task-node", { "is-complete": task.done }]}>
+                          <span class="tree-label">
+                            <span class="task-state">{task.done ? "[x]" : "[ ]"}</span>
+                            <span class="task-title">{task.title}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

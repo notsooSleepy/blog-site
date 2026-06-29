@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatLongDate } from "../../lib/date";
+
+export async function getStaticPaths() {
+  const gists = await getCollection("gists");
+  return gists.map((gist) => ({ params: { slug: gist.id }, props: { gist } }));
+}
+
+const { gist } = Astro.props;
+const { Content } = await render(gist);
+---
+
+<BaseLayout title={gist.data.title} description={gist.data.description} type="article">
+  <article class="prose rendered-content">
+    <a class="back-link" href="/gists" data-gists-back>Back to gists</a>
+    <header>
+      <p class="eyebrow">{formatLongDate(gist.data.date)}</p>
+      <h1>{gist.data.title}</h1>
+      <p>{gist.data.description}</p>
+      <ul class="tag-list" aria-label="Tags">
+        {gist.data.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    </header>
+    <Content />
+  </article>
+  <script>
+    const backLink = document.querySelector<HTMLAnchorElement>("[data-gists-back]");
+
+    if (backLink && document.referrer) {
+      try {
+        const referrer = new URL(document.referrer);
+        const referrerPath = referrer.pathname.replace(/\/$/, "");
+
+        if (referrer.origin === window.location.origin && referrerPath === "/gists") {
+          backLink.href = `${referrer.pathname}${referrer.search}${referrer.hash}`;
+        }
+      } catch {
+        // Keep the default /gists destination for invalid or unavailable referrers.
+      }
+    }
+  </script>
+</BaseLayout>

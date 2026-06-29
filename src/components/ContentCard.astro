@@ -1,0 +1,30 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  meta: string;
+  tags?: string[];
+  headingLevel?: "h2" | "h3";
+}
+
+const { href, title, description, meta, tags = [], headingLevel = "h3" } = Astro.props;
+const Heading = headingLevel;
+---
+
+<article class="content-card">
+  <a href={href}>
+    <span class="card-meta">{meta}</span>
+    <Heading>{title}</Heading>
+    <p>{description}</p>
+    {
+      tags.length > 0 && (
+        <ul class="tag-list" aria-label="Tags">
+          {tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </a>
+</article>

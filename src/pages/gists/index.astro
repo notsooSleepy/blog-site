@@ -1,0 +1,127 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatShortDate } from "../../lib/date";
+
+const entries = (await getCollection("gists")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const gists = await Promise.all(
+  entries.map(async (gist) => {
+    const { Content } = await render(gist);
+    return { gist, Content };
+  })
+);
+
+const initialResultLabel = `${gists.length} ${gists.length === 1 ? "gist" : "gists"}`;
+---
+
+<BaseLayout title="Gists">
+  <section class="page-heading">
+    <p class="eyebrow">gists // copyable notes</p>
+    <h1>Small snippets for real tasks</h1>
+    <p>
+      Focused commands and code examples with enough context to find, understand,
+      and reuse them.
+    </p>
+  </section>
+
+  <section class="gist-search" aria-labelledby="gist-search-label">
+    <label id="gist-search-label" for="gist-search">Search gists</label>
+    <input
+      id="gist-search"
+      type="search"
+      placeholder="Search titles, tags, languages, or code"
+      autocomplete="off"
+      disabled
+      data-gist-search
+    />
+    <p class="search-status" data-search-status aria-live="polite">
+      {initialResultLabel}
+    </p>
+    <noscript>
+      <p class="search-note">Search requires JavaScript; all gists are shown below.</p>
+    </noscript>
+  </section>
+
+  <section class="gist-list" aria-label="Gists" data-gist-list>
+    {
+      gists.map(({ gist, Content }) => {
+        const titleId = `gist-${gist.id}-title`;
+
+        return (
+        <article class="gist-entry" aria-labelledby={titleId} data-gist>
+          <header class="gist-header">
+            <p class="card-meta">{formatShortDate(gist.data.date)}</p>
+            <p class="gist-title" id={titleId}>
+              <a href={`/gists/${gist.id}`}>{gist.data.title}</a>
+            </p>
+            <p>{gist.data.description}</p>
+            <ul class="tag-list" aria-label="Tags">
+              {gist.data.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
+          </header>
+          <div class="gist-body rendered-content">
+            <Content />
+          </div>
+        </article>
+        );
+      })
+    }
+    <p class="empty-state" hidden data-no-results>
+      No gists match this search.
+    </p>
+  </section>
+
+  <script>
+    const searchInput = document.querySelector<HTMLInputElement>("[data-gist-search]");
+    const results = Array.from(document.querySelectorAll<HTMLElement>("[data-gist]")).map(
+      (element) => ({
+        element,
+        searchText: [
+          element.textContent ?? "",
+          ...Array.from(element.querySelectorAll<HTMLElement>("pre[data-language]"))
+            .map((codeBlock) => codeBlock.dataset.language ?? "")
+        ]
+          .join(" ")
+          .toLocaleLowerCase()
+      })
+    );
+    const status = document.querySelector<HTMLElement>("[data-search-status]");
+    const noResults = document.querySelector<HTMLElement>("[data-no-results]");
+
+    if (searchInput && status && noResults) {
+      const applySearch = (updateUrl: boolean) => {
+        const query = searchInput.value.trim();
+        const terms = query.toLocaleLowerCase().split(/\s+/).filter(Boolean);
+        let matchCount = 0;
+
+        results.forEach(({ element, searchText }) => {
+          const matches = terms.every((term) => searchText.includes(term));
+          element.hidden = !matches;
+          if (matches) matchCount += 1;
+        });
+
+        status.textContent = `${matchCount} ${matchCount === 1 ? "gist" : "gists"}`;
+        noResults.hidden = matchCount !== 0;
+
+        if (updateUrl) {
+          const url = new URL(window.location.href);
+          if (query) {
+            url.searchParams.set("q", query);
+          } else {
+            url.searchParams.delete("q");
+          }
+          window.history.replaceState({}, "", url);
+        }
+      };
+
+      const initialQuery = new URL(window.location.href).searchParams.get("q") ?? "";
+      searchInput.disabled = false;
+      searchInput.value = initialQuery;
+      applySearch(false);
+      searchInput.addEventListener("input", () => applySearch(true));
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ContentCard from "../../components/ContentCard.astro";
+import { formatShortDate } from "../../lib/date";
+
+const posts = (await getCollection("posts")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout title="Posts">
+  <section class="page-heading">
+    <p class="eyebrow">posts</p>
+    <h1>Notes, fixes, and build logs</h1>
+    <p>
+      Practical writeups from daily tinkering: the useful bits, the broken
+      parts, and the things worth remembering.
+    </p>
+  </section>
+  <section class="listing">
+    {
+      posts.map((post) => (
+        <ContentCard
+          href={`/posts/${post.id}`}
+          title={post.data.title}
+          description={post.data.description}
+          meta={formatShortDate(post.data.date)}
+          tags={post.data.tags}
+          headingLevel="h2"
+        />
+      ))
+    }
+  </section>
+</BaseLayout>

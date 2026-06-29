@@ -1,0 +1,71 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContentCard from "../components/ContentCard.astro";
+import { formatShortDate, formatYear } from "../lib/date";
+
+const posts = (await getCollection("posts"))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const projects = (await getCollection("projects"))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 2);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">technical notes // build log</p>
+      <h1>notsoosleepy</h1>
+      <p class="lede">
+        Practical notes on infrastructure, scripts, and debugging: what I
+        built, what broke, and what I learned.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="/projects">View projects</a>
+        <a class="button" href="/posts">Read notes</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-grid">
+    <div>
+      <p class="eyebrow">latest entries</p>
+      <h2>Latest notes from the work log</h2>
+    </div>
+    <div class="card-grid">
+      {
+        posts.map((post) => (
+          <ContentCard
+            href={`/posts/${post.id}`}
+            title={post.data.title}
+            description={post.data.description}
+            meta={formatShortDate(post.data.date)}
+            tags={post.data.tags}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section-grid alt">
+    <div>
+      <p class="eyebrow">documented projects</p>
+      <h2>Work with useful context</h2>
+    </div>
+    <div class="card-grid">
+      {
+        projects.map((project) => (
+          <ContentCard
+            href={`/projects/${project.id}`}
+            title={project.data.title}
+            description={project.data.description}
+            meta={`${project.data.status} / ${formatYear(project.data.date)}`}
+            tags={project.data.tools}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

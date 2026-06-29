@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ContentCard from "../../components/ContentCard.astro";
+import { formatYear } from "../../lib/date";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout title="Projects">
+  <section class="page-heading">
+    <p class="eyebrow">projects</p>
+    <h1>Case studies with useful context</h1>
+    <p>
+      Larger builds documented with motivation, tools, what worked, what broke,
+      and what I learned.
+    </p>
+  </section>
+  <section class="listing">
+    {
+      projects.map((project) => (
+        <ContentCard
+          href={`/projects/${project.id}`}
+          title={project.data.title}
+          description={project.data.description}
+          meta={`${project.data.status} / ${formatYear(project.data.date)}`}
+          tags={project.data.tools}
+          headingLevel="h2"
+        />
+      ))
+    }
+  </section>
+</BaseLayout>
