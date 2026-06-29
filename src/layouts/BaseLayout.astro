@@ -85,11 +85,26 @@ const isCurrentPage = (href: string) =>
         language.className = "code-language";
         language.textContent = codeBlock.dataset.language ?? "text";
 
+        let precedingElement = codeBlock.previousElementSibling;
+        while (precedingElement && !precedingElement.matches("h2, h3, h4, h5, h6")) {
+          precedingElement = precedingElement.previousElementSibling;
+        }
+
+        const sectionTitle = precedingElement?.textContent?.trim();
+        const articleTitle = codeBlock
+          .closest("article")
+          ?.querySelector<HTMLElement>("h1, .gist-title")
+          ?.textContent?.trim();
+        const codeContext = sectionTitle || articleTitle || "this section";
+
         const button = document.createElement("button");
         button.type = "button";
         button.className = "copy-code";
         button.textContent = "Copy";
-        button.setAttribute("aria-label", "Copy code to clipboard");
+        button.setAttribute(
+          "aria-label",
+          `Copy ${language.textContent} code from ${codeContext}`
+        );
 
         const status = document.createElement("span");
         status.className = "visually-hidden";

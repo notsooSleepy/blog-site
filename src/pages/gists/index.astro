@@ -54,9 +54,9 @@ const initialResultLabel = `${gists.length} ${gists.length === 1 ? "gist" : "gis
         <article class="gist-entry" aria-labelledby={titleId} data-gist>
           <header class="gist-header">
             <p class="card-meta">{formatShortDate(gist.data.date)}</p>
-            <p class="gist-title" id={titleId}>
+            <h2 class="gist-title" id={titleId}>
               <a href={`/gists/${gist.id}`}>{gist.data.title}</a>
-            </p>
+            </h2>
             <p>{gist.data.description}</p>
             <ul class="tag-list" aria-label="Tags">
               {gist.data.tags.map((tag) => <li>{tag}</li>)}
