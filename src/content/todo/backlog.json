@@ -11,7 +11,7 @@
             { "title": "make demo app to host on kubernetes", "done": false },
             { "title": "list every hosted service, host, and dependency", "done": false },
             { "title": "restore one service from its latest backup", "done": false },
-            { "title": "write the service recovery order as a runbook", "done": false }
+            { "title": "write the service recovery order as a runbook", "done": false },
           ]
         },
         {
@@ -19,7 +19,7 @@
           "tasks": [
             { "title": "list recurring maintenance tasks with frequency and time cost", "done": false },
             { "title": "automate the highest-cost repeated task", "done": false },
-            { "title": "add dry-run mode, useful logs, and non-zero failure codes", "done": false }
+            { "title": "add dry-run mode, useful logs, and non-zero failure codes", "done": false },
           ]
         }
       ]
@@ -32,7 +32,7 @@
           "tasks": [
             { "title": "make template for publishing posts", "done": false },
             { "title": "include environment versions and tested commands in technical posts - IMPORTANT", "done": false },
-            { "title": "figure out how to link primary documentation for technical claims", "done": false }
+            { "title": "figure out how to link primary documentation for technical claims", "done": false },
           ]
         },
         {
@@ -40,7 +40,7 @@
           "tasks": [
             { "title": "replace the sample case study with one real project", "done": false },
             { "title": "document its architecture, constraints, and tradeoffs", "done": false },
-            { "title": "add evidence: source, screenshots, output, or a live demo", "done": false }
+            { "title": "add evidence: source, screenshots, output, or a live demo", "done": false },
           ]
         }
       ]
@@ -53,14 +53,14 @@
           "tasks": [
             { "title": "rewrite About, think about the structure and content", "done": false },
             { "title": "replace or remove every seeded sample post", "done": false },
-            { "title": "replace or remove the seeded sample project", "done": false }
+            { "title": "replace or remove the seeded sample project", "done": false },
           ]
         },
         {
           "title": "ui",
           "tasks": [
-            { "title": "rebuild Footer", "done": false }
-            { "title": "rebuild Gists with clicking on whole page is link, which makes it consistent with the rest o the site", "done": false }
+            { "title": "rebuild Footer", "done": false },
+            { "title": "rebuild Gists with clicking on whole page is link, which makes it consistent with the rest o the site", "done": false },
           ]
         },
         {
@@ -69,7 +69,7 @@
             { "title": "publish an RSS feed and link it from the document head", "done": false },
             { "title": "generate sitemap.xml and add robots.txt", "done": false },
             { "title": "add canonical and social preview metadata", "done": false },
-            { "title": "deploy and verify routes, assets, HTTPS, and external links", "done": false }
+            { "title": "deploy and verify routes, assets, HTTPS, and external links", "done": false },
           ]
         }
       ]
