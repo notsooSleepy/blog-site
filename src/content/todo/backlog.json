@@ -6,6 +6,9 @@
         {
           "title": "homelab",
           "tasks": [
+            { "title": "make OPNsense initial setup writeup", "done": false },
+            { "title": "you have 3 nodes kubernetes ready-use them", "done": false },
+            { "title": "make demo app to host on kubernetes", "done": false },
             { "title": "list every hosted service, host, and dependency", "done": false },
             { "title": "restore one service from its latest backup", "done": false },
             { "title": "write the service recovery order as a runbook", "done": false }
@@ -27,9 +30,9 @@
         {
           "title": "posts",
           "tasks": [
-            { "title": "publish one real debugging note using the existing template", "done": false },
-            { "title": "include environment versions and tested commands in technical posts", "done": false },
-            { "title": "link primary documentation for technical claims", "done": false }
+            { "title": "make template for publishing posts", "done": false },
+            { "title": "include environment versions and tested commands in technical posts - IMPORTANT", "done": false },
+            { "title": "figure out how to link primary documentation for technical claims", "done": false }
           ]
         },
         {
@@ -48,7 +51,7 @@
         {
           "title": "content",
           "tasks": [
-            { "title": "rewrite About with name, current role, and technical focus", "done": false },
+            { "title": "rewrite About, think about the structure and content", "done": false },
             { "title": "replace or remove every seeded sample post", "done": false },
             { "title": "replace or remove the seeded sample project", "done": false }
           ]
@@ -56,9 +59,8 @@
         {
           "title": "ui",
           "tasks": [
-            { "title": "replace the eldritch theme with a clean technical style", "done": true },
-            { "title": "replace Now with a persistent hierarchical TODO", "done": true },
-            { "title": "add GitHub and LinkedIn links to the footer", "done": true }
+            { "title": "rebuild Footer", "done": false }
+            { "title": "rebuild Gists with clicking on whole page is link, which makes it consistent with the rest o the site", "done": false }
           ]
         },
         {
