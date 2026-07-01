@@ -51,15 +51,27 @@ const initialResultLabel = `${gists.length} ${gists.length === 1 ? "gist" : "gis
         const titleId = `gist-${gist.id}-title`;
 
         return (
-        <article class="gist-entry" aria-labelledby={titleId} data-gist>
+        <article
+          class="gist-entry"
+          aria-labelledby={titleId}
+          data-gist
+        >
           <header class="gist-header">
-            <p class="card-meta">{formatShortDate(gist.data.date)}</p>
-            <h2 class="gist-title" id={titleId}>
-              <a href={`/gists/${gist.id}`}>{gist.data.title}</a>
-            </h2>
-            <p>{gist.data.description}</p>
+            <a
+              class="gist-card-link"
+              href={`/gists/${gist.id}`}
+              aria-labelledby={titleId}
+            >
+              <p class="card-meta">{formatShortDate(gist.data.date)}</p>
+              <h2 class="gist-title" id={titleId}>{gist.data.title}</h2>
+              <p>{gist.data.description}</p>
+            </a>
             <ul class="tag-list" aria-label="Tags">
-              {gist.data.tags.map((tag) => <li>{tag}</li>)}
+              {
+                gist.data.tags.map((tag) => (
+                  <li><span class="gist-tag" data-gist-tag={tag}>{tag}</span></li>
+                ))
+              }
             </ul>
           </header>
           <div class="gist-body rendered-content">
@@ -90,6 +102,7 @@ const initialResultLabel = `${gists.length} ${gists.length === 1 ? "gist" : "gis
     );
     const status = document.querySelector<HTMLElement>("[data-search-status]");
     const noResults = document.querySelector<HTMLElement>("[data-no-results]");
+    const tagLabels = document.querySelectorAll<HTMLElement>("[data-gist-tag]");
 
     if (searchInput && status && noResults) {
       const applySearch = (updateUrl: boolean) => {
@@ -122,6 +135,20 @@ const initialResultLabel = `${gists.length} ${gists.length === 1 ? "gist" : "gis
       searchInput.value = initialQuery;
       applySearch(false);
       searchInput.addEventListener("input", () => applySearch(true));
+      tagLabels.forEach((label) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "gist-tag gist-tag-button";
+        button.dataset.gistTag = label.dataset.gistTag;
+        button.textContent = label.textContent;
+        label.replaceWith(button);
+
+        button.addEventListener("click", () => {
+          searchInput.value = button.dataset.gistTag ?? "";
+          applySearch(true);
+          searchInput.focus();
+        });
+      });
     }
   </script>
 </BaseLayout>

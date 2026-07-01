@@ -2,7 +2,7 @@
 title: "Inspect an HTTP endpoint with curl"
 description: "Check response headers, redirects, status, and request timing from the command line."
 date: 2026-06-25
-tags: ["curl", "http", "networking", "debugging"]
+tags: ["curl", "networking", "debugging"]
 ---
 
 ## Follow redirects and show headers

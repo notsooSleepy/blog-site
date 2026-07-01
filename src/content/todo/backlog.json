@@ -119,7 +119,7 @@
             },
             {
               "title": "rebuild Gists with clicking on whole page is link, which makes it consistent with the rest o the site",
-              "done": false
+              "done": true
             }
           ]
         },

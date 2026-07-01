@@ -1,6 +1,6 @@
 ---
-title: "dolphin Arch repair"
-description: "two steps to repair default app save on dolphin"
+title: "Dolphin Arch repair"
+description: "Two steps to repair default app save on dolphin"
 date: 2026-06-29
 tags: [ "dolphin", "fix", "arch" ]
 ---
