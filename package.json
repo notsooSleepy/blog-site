@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "check:site": "node scripts/check-site.mjs",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "test:e2e": "npm run build && playwright test"
   },

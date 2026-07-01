@@ -18,7 +18,11 @@ npm run dev
 npm run build
 npx playwright install chromium
 npm run test:e2e
+npm run check:site
 ```
+
+`npm run check:site` validates the deployed routes, discovery files, canonical URLs,
+assets, footer profiles, and external links. Set `SITE_URL` to check another deployment.
 
 ## Structure
 

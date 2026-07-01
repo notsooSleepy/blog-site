@@ -140,7 +140,7 @@
             },
             {
               "title": "deploy and verify routes, assets, HTTPS, and external links",
-              "done": false
+              "done": true
             }
           ]
         }

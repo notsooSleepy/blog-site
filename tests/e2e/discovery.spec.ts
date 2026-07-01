@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { SITE_URL } from "../../src/config/site";
+import { SITE_URL } from "../../src/config/site.mjs";
 
 const productionOrigin = new URL(SITE_URL).origin;
 const xmlContentType = /^(application|text)\/(rss\+)?xml\b/;

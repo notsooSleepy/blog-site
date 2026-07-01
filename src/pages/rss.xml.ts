@@ -1,7 +1,7 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
-import { SITE_URL } from "../config/site";
+import { SITE_URL } from "../config/site.mjs";
 
 export const GET: APIRoute = async (context) => {
   const posts = (await getCollection("posts")).sort(
