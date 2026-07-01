@@ -128,15 +128,15 @@
           "tasks": [
             {
               "title": "publish an RSS feed and link it from the document head",
-              "done": false
+              "done": true
             },
             {
               "title": "generate sitemap.xml and add robots.txt",
-              "done": false
+              "done": true
             },
             {
               "title": "add canonical and social preview metadata",
-              "done": false
+              "done": true
             },
             {
               "title": "deploy and verify routes, assets, HTTPS, and external links",

@@ -3,7 +3,7 @@ import "../styles/global.css";
 
 const {
   title = "notsoosleepy",
-  description = "A public build log for DevOps, homelab experiments, debugging, and practical technical notes.",
+  description = "A public build log for homelab experiments, debugging, infrastructure, and practical technical notes.",
   type = "website"
 } = Astro.props;
 
@@ -39,6 +39,7 @@ const isCurrentPage = (href: string) =>
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
+    <link rel="alternate" type="application/rss+xml" title="notsoosleepy RSS" href="/rss.xml" />
     <title>{pageTitle}</title>
   </head>
   <body>
@@ -64,6 +65,7 @@ const isCurrentPage = (href: string) =>
     <footer class="site-footer">
       <a href="https://github.com/notsooSleepy" rel="me">GitHub</a>
       <a href="https://www.linkedin.com/in/bart%C5%82omiej-grabarek-070733236/" rel="me">LinkedIn</a>
+      <a href="/rss.xml">RSS</a>
     </footer>
     <script>
       const copyText = async (text: string) => {

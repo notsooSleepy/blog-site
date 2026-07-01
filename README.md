@@ -1,11 +1,14 @@
 # notsoosleepy-site
 
-Public build log and technical portfolio for DevOps, homelab work, debugging notes, and practical daily tinkering.
+Public build log and technical portfolio for homelab work, infrastructure notes, debugging, and practical daily tinkering.
 
 ## Requirements
 
 - Node.js 22.12.0 or newer
-- npm 9.6.5 or newer
+- npm 10.8.2 or newer
+
+Set `SITE_URL` to the final production origin when building for deployment. If omitted, the
+current Workers domain is used.
 
 ## Commands
 

@@ -19,7 +19,7 @@ actually spend time on.
 
 ## What belongs here
 
-- DevOps notes from homelab and work-adjacent experiments
+- Homelab notes and work-adjacent technical experiments
 - Service configuration and operational runbooks
 - Debugging records with enough context to reuse the fix
 - Tiny automations that save time

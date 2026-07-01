@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { SITE_URL } from "../../src/config/site";
+
+const productionOrigin = new URL(SITE_URL).origin;
 
 test("filters gists across metadata, language, and code", async ({ page }) => {
   await page.goto("/gists");
@@ -59,7 +62,7 @@ test("emits metadata and exposes skip navigation", async ({ page }) => {
 
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
-    "https://blog-site.runcorx.workers.dev/gists/curl-http-diagnostics/"
+    `${productionOrigin}/gists/curl-http-diagnostics/`
   );
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
 
