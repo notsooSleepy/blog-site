@@ -115,7 +115,7 @@
           "tasks": [
             {
               "title": "rebuild Footer",
-              "done": false
+              "done": true
             },
             {
               "title": "rebuild Gists with clicking on whole page is link, which makes it consistent with the rest o the site",

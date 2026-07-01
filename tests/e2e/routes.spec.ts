@@ -33,15 +33,19 @@ for (const { path, heading } of coreRoutes) {
 test("footer links point to the public profiles and RSS feed", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("link", { name: "GitHub" })).toHaveAttribute(
+  const footer = page.locator("footer");
+
+  await expect(footer.getByRole("navigation", { name: "Footer navigation" })).toBeVisible();
+
+  await expect(footer.getByRole("link", { name: "GitHub" })).toHaveAttribute(
     "href",
     "https://github.com/notsooSleepy"
   );
-  await expect(page.getByRole("link", { name: "LinkedIn" })).toHaveAttribute(
+  await expect(footer.getByRole("link", { name: "LinkedIn" })).toHaveAttribute(
     "href",
     "https://www.linkedin.com/in/bart%C5%82omiej-grabarek-070733236/"
   );
-  await expect(page.getByRole("link", { name: "RSS", exact: true })).toHaveAttribute(
+  await expect(footer.getByRole("link", { name: "RSS", exact: true })).toHaveAttribute(
     "href",
     "/rss.xml"
   );

@@ -22,6 +22,7 @@ const navItems = [
 const currentPath = Astro.url.pathname;
 const isCurrentPage = (href: string) =>
   href === "/" ? currentPath === href : currentPath === href || currentPath.startsWith(`${href}/`);
+const currentYear = new Date().getFullYear();
 ---
 
 <!doctype html>
@@ -63,9 +64,38 @@ const isCurrentPage = (href: string) =>
       <slot />
     </main>
     <footer class="site-footer">
-      <a href="https://github.com/notsooSleepy" rel="me">GitHub</a>
-      <a href="https://www.linkedin.com/in/bart%C5%82omiej-grabarek-070733236/" rel="me">LinkedIn</a>
-      <a href="/rss.xml">RSS</a>
+      <div class="footer-main">
+        <div class="footer-intro">
+          <a class="brand footer-brand" href="/" aria-label="notsoosleepy home">notsoosleepy</a>
+          <p>Practical notes on infrastructure, homelab work, debugging, and the lessons between.</p>
+        </div>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <div class="footer-group">
+            <p class="footer-label">Explore</p>
+            <a href="/posts">Posts</a>
+            <a href="/gists">Gists</a>
+            <a href="/projects">Projects</a>
+            <a href="/todo">TODO</a>
+          </div>
+          <div class="footer-group">
+            <p class="footer-label">Connect</p>
+            <a href="https://github.com/notsooSleepy" rel="me">GitHub</a>
+            <a href="https://www.linkedin.com/in/bart%C5%82omiej-grabarek-070733236/" rel="me">
+              LinkedIn
+            </a>
+            <a href="/about">About</a>
+          </div>
+          <div class="footer-group footer-subscribe">
+            <p class="footer-label">Follow</p>
+            <a href="/rss.xml">RSS</a>
+            <p>New posts in your feed, without an algorithm.</p>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {currentYear} notsoosleepy</p>
+        <p>Built in Łódź, Poland</p>
+      </div>
     </footer>
     <script>
       const copyText = async (text: string) => {
