@@ -448,6 +448,7 @@ h3 {
 
 .gist-entry {
   position: relative;
+  min-width: 0;
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 6px;

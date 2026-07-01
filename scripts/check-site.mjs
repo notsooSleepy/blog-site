@@ -13,7 +13,7 @@ const pagePaths = [
   "/gists/",
   "/gists/curl-http-diagnostics/",
   "/projects/",
-  "/projects/homelab-documentation-system/",
+  "/projects/notsoosleepy-blog-platform/",
   "/todo/"
 ];
 const discoveryPaths = ["/rss.xml", "/sitemap-index.xml", "/robots.txt"];

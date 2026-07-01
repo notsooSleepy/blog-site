@@ -31,3 +31,5 @@ assets, footer profiles, and external links. Set `SITE_URL` to check another dep
 - `src/content/projects` - project case studies with tools, failures, and lessons
 - `src/pages` - site routes
 - `src/styles/global.css` - shared visual system
+- `templates/technical-fix.md` - structure for investigated and verified fixes
+- `templates/build-log.md` - structure for experiments, decisions, and outcomes

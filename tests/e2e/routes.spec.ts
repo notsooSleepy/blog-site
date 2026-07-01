@@ -15,8 +15,8 @@ const coreRoutes = [
   },
   { path: "/projects", heading: "Case studies with useful context" },
   {
-    path: "/projects/homelab-documentation-system",
-    heading: "Homelab documentation system"
+    path: "/projects/notsoosleepy-blog-platform",
+    heading: "notsoosleepy blog platform"
   },
   { path: "/todo", heading: "TODO" }
 ] as const;
