@@ -6,7 +6,7 @@ const coreRoutes = [
   { path: "/posts", heading: "Notes, fixes, and build logs" },
   {
     path: "/posts/why-im-starting-notsoosleepy",
-    heading: "Why I am starting notsoosleepy blog"
+    heading: "Why I am starting the notsoosleepy blog"
   },
   { path: "/gists", heading: "Small snippets for real tasks" },
   {

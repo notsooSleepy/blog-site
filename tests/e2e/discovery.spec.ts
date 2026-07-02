@@ -4,6 +4,15 @@ import { SITE_URL } from "../../src/config/site.mjs";
 const productionOrigin = new URL(SITE_URL).origin;
 const xmlContentType = /^(application|text)\/(rss\+)?xml\b/;
 
+test("publishes and links the site favicon", async ({ page, request }) => {
+  await page.goto("/");
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href", "/favicon.svg");
+
+  const response = await request.get("/favicon.svg");
+  expect(response.ok()).toBe(true);
+  expect(response.headers()["content-type"]).toContain("image/svg+xml");
+});
+
 test("publishes an RSS feed with absolute post links", async ({ request }) => {
   const response = await request.get("/rss.xml");
   const body = await response.text();
@@ -34,4 +43,5 @@ test("generates a sitemap containing public routes", async ({ request }) => {
   expect(sitemapResponse.ok()).toBe(true);
   expect(sitemap).toContain(`<loc>${productionOrigin}/</loc>`);
   expect(sitemap).toContain(`<loc>${productionOrigin}/posts/</loc>`);
+  expect(sitemap).toContain(`<loc>${productionOrigin}/gists/dolphin_arch_repair/</loc>`);
 });

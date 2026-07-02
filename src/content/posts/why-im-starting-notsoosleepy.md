@@ -1,30 +1,25 @@
 ---
-title: "Why I am starting notsoosleepy blog"
-description: "A short introduction to me and what i do."
+title: "Why I am starting the notsoosleepy blog"
+description: "Why I am documenting my projects, fixes, experiments, and lessons in public."
 date: 2026-06-29
 tags: ["build-log", "meta", "career"]
 ---
 
-Hello everyone,
+My name is Bartek, and I built this site to make my work visible. It is a place
+to record what I build, what fails, and what I learn while fixing it.
 
-My name is Bartek and this is my blog.
-I wanted a place that makes the stuff I do visible for other people.
-A place i can record my wins and failures.
-
-
-
-Not polished case studies only. Not perfect tutorials only. The useful middle:
-small fixes, broken assumptions, working notes, and build logs from the things I
-actually spend time on.
+The useful work rarely fits into polished case studies or perfect tutorials.
+There is value in the middle: small fixes, broken assumptions, working notes,
+and build logs from the things I actually spend time on.
 
 ## What belongs here
 
 - Homelab notes and work-adjacent technical experiments
 - Service configuration and operational runbooks
 - Debugging records with enough context to reuse the fix
-- Tiny automations that save time
-- Debugging notes I do not want to rediscover later
-- Salted with some unrelated small projects like 3D printing and keyboard related thinkering
+- Small automations that save time
+- Notes about fixes I do not want to rediscover later
+- Occasional projects involving 3D printing, keyboards, and other practical experiments
 
 ## What I want this to prove
 
@@ -32,10 +27,11 @@ I want the site to show consistency, curiosity, and useful technical judgment.
 The best version of this blog is not a pile of perfect essays. It is a trail of
 real problems getting solved.
 
-## Page structure
+## How the site is organized
 
-As you probably noticed there are 3 structures for sharing things:
-- Projects for big writeups, with structure and conclusions
-- Posts with thoughts, unrelated to each other, small bits to share
-- Gists which are supposed to be a small searchable (usually but not only) code bits with solutions i found
-- With additional TODO pipeline
+The site separates different kinds of work:
+
+- **Projects** are larger case studies with context, decisions, evidence, and conclusions.
+- **Posts** are build logs, technical notes, and thoughts that need more explanation.
+- **Gists** are small, searchable commands and code snippets for specific tasks.
+- **TODO** is the public pipeline of work that still needs to be built, verified, or documented.

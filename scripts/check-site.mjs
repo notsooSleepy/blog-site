@@ -5,17 +5,6 @@ import { SITE_URL } from "../src/config/site.mjs";
 
 const siteUrl = new URL(SITE_URL);
 const timeoutMs = 15_000;
-const pagePaths = [
-  "/",
-  "/about/",
-  "/posts/",
-  "/posts/why-im-starting-notsoosleepy/",
-  "/gists/",
-  "/gists/curl-http-diagnostics/",
-  "/projects/",
-  "/projects/notsoosleepy-blog-platform/",
-  "/todo/"
-];
 const discoveryPaths = ["/rss.xml", "/sitemap-index.xml", "/robots.txt"];
 const failures = [];
 const warnings = [];
@@ -38,6 +27,10 @@ function extractAttributeUrls(html) {
 
 function extractCanonical(html) {
   return html.match(/<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1];
+}
+
+function extractSitemapUrls(xml) {
+  return [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map((match) => match[1]);
 }
 
 function normalizedPath(pathname) {
@@ -76,15 +69,37 @@ async function checkRequiredUrl(path) {
   }
 }
 
-const linkedUrls = new Set();
+const sitemapIndexResponse = await checkRequiredUrl("/sitemap-index.xml");
+const sitemapUrls = sitemapIndexResponse?.ok
+  ? extractSitemapUrls(await sitemapIndexResponse.text())
+  : [];
+const pageUrls = new Set();
 
-for (const path of pagePaths) {
-  const response = await checkRequiredUrl(path);
+for (const sitemapUrl of sitemapUrls) {
+  const response = await checkRequiredUrl(sitemapUrl);
+  if (!response?.ok) continue;
+
+  for (const pageUrl of extractSitemapUrls(await response.text())) {
+    const url = new URL(pageUrl, siteUrl);
+    if (url.origin === siteUrl.origin) pageUrls.add(url.href);
+  }
+}
+
+if (pageUrls.size === 0) {
+  failures.push("Sitemap did not expose any same-origin public pages");
+}
+
+const linkedUrls = new Set();
+const checkedUrls = new Set([new URL("/sitemap-index.xml", siteUrl).href, ...sitemapUrls]);
+
+for (const pageUrl of pageUrls) {
+  const response = await checkRequiredUrl(pageUrl);
+  checkedUrls.add(pageUrl);
   if (!response?.ok) continue;
 
   const html = await response.text();
   const canonical = extractCanonical(html);
-  const expected = new URL(path, siteUrl);
+  const expected = new URL(pageUrl);
 
   if (!canonical) {
     failures.push(`${expected.href} has no canonical link`);
@@ -98,18 +113,24 @@ for (const path of pagePaths) {
 
   for (const value of extractAttributeUrls(html)) {
     if (value.startsWith("#") || value.startsWith("mailto:") || value.startsWith("tel:")) continue;
-    linkedUrls.add(new URL(value, expected).href);
+    const linkedUrl = new URL(value, expected);
+    linkedUrl.hash = "";
+    linkedUrls.add(linkedUrl.href);
   }
 }
 
-for (const path of discoveryPaths) await checkRequiredUrl(path);
+for (const path of discoveryPaths.filter((path) => path !== "/sitemap-index.xml")) {
+  const url = new URL(path, siteUrl);
+  await checkRequiredUrl(url);
+  checkedUrls.add(url.href);
+}
 for (const url of await contentUrls(fileURLToPath(new URL("../src/content", import.meta.url)))) {
   linkedUrls.add(url);
 }
 
 for (const href of [...linkedUrls].sort()) {
+  if (checkedUrls.has(href)) continue;
   const url = new URL(href);
-  if (url.origin === siteUrl.origin && !url.pathname.startsWith("/_astro/")) continue;
 
   try {
     const response = await fetchUrl(url);
@@ -131,5 +152,5 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`FAIL ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`PASS checked ${pagePaths.length} pages, ${discoveryPaths.length} discovery files, and ${linkedUrls.size} linked resources`);
+  console.log(`PASS checked ${pageUrls.size} sitemap pages, ${discoveryPaths.length} discovery files, and ${linkedUrls.size} linked resources`);
 }
