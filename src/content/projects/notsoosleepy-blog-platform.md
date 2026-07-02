@@ -28,11 +28,15 @@ content collections, then route templates turn those entries into static pages.
 ```text
 Markdown and JSON
         |
-Astro content collections
+Glob loaders and Zod schemas
         |
-Static pages, RSS, sitemap, and robots.txt
+Typed content entries
         |
-Cloudflare Workers static assets
+Build-time route generation and shared layout
+        |
+Static pages, assets, RSS, sitemap, and robots.txt
+        |
+Cloudflare Workers
 ```
 
 The main pieces are:
@@ -45,6 +49,124 @@ The main pieces are:
   discovery files, and metadata.
 - A production checker for HTTPS routes, canonical URLs, assets, and external links.
 
+## Codebase walkthrough
+
+The repository is deliberately small, but its boundaries are explicit. Content enters
+through schemas, routes are generated at build time, shared behavior stays in one layout,
+and client-side code is limited to workflows that need it.
+
+### Content is a typed input
+
+Astro content collections turn Markdown into structured build input. The project
+collection uses a glob loader to find entries and a Zod schema to reject incomplete or
+invalid frontmatter before a page can be generated.
+
+```ts
+const projects = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    status: z.enum(["active", "paused", "done"]),
+    tools: z.array(z.string())
+  })
+});
+```
+
+For an Astro learner, the important point is that Markdown is not treated as an
+unvalidated string. For a maintainer, this creates a clear contract: listing cards and
+detail pages can rely on every project having the same required fields. The cost is a
+small amount of frontmatter ceremony for each entry.
+
+[View the pinned collection schema](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/src/content.config.ts#L25-L34).
+
+### Detail routes are generated at build time
+
+The project detail route asks Astro for every project during the build. Each content ID
+becomes a URL parameter, and the full entry is passed to the page as a prop.
+
+```astro
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project }
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+```
+
+`getStaticPaths()` is the bridge between content and routing: it produces one static page
+per entry without a database lookup or application server at request time. Adding a
+project therefore changes the build output, not the runtime architecture.
+
+[View the pinned project route](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/src/pages/projects/%5Bslug%5D.astro#L5-L17).
+
+### The shared layout owns cross-cutting behavior
+
+Every route passes its title, description, and page type into one layout. That layout
+derives the canonical URL and emits the metadata that should remain consistent across
+posts, gists, projects, and index pages.
+
+```astro
+const pageTitle = title === "notsoosleepy" ? title : `${title} | notsoosleepy`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<link rel="alternate" type="application/rss+xml" href="/rss.xml" />
+```
+
+Keeping metadata, navigation, the footer, and code-copy enhancement in the shared shell
+prevents route templates from drifting apart. It also makes the layout a deliberate
+cross-cutting boundary rather than only a visual wrapper.
+
+[View the pinned layout metadata](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/src/layouts/BaseLayout.astro#L4-L44) and
+[the copy-control enhancement](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/src/layouts/BaseLayout.astro#L100-L165).
+
+### Interactivity and verification stay layered
+
+The gist page begins as rendered HTML. When JavaScript is available, it derives a
+searchable text index, filters entries with all query terms, updates result status, and
+keeps the query in the URL.
+
+```ts
+const applySearch = (updateUrl: boolean) => {
+  const query = searchInput.value.trim();
+  const terms = query.toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  let matchCount = 0;
+
+  results.forEach(({ element, searchText }) => {
+    const matches = terms.every((term) => searchText.includes(term));
+    element.hidden = !matches;
+    if (matches) matchCount += 1;
+  });
+
+  status.textContent = `${matchCount} ${matchCount === 1 ? "gist" : "gists"}`;
+  noResults.hidden = matchCount !== 0;
+
+  if (updateUrl) {
+    const url = new URL(window.location.href);
+    if (query) url.searchParams.set("q", query);
+    else url.searchParams.delete("q");
+    window.history.replaceState({}, "", url);
+  }
+};
+```
+
+Tags are upgraded from labels to buttons only after the search input is enabled. Native
+title links and all gist content remain available without JavaScript. This costs more
+implementation and browser testing than a client-only list, but avoids making content
+availability depend on hydration.
+
+[View the pinned gist enhancement](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/src/pages/gists/index.astro#L89-L153).
+
 ## Constraints
 
 - The site should remain useful without a database or server-side application state.
@@ -53,17 +175,12 @@ The main pieces are:
 - Deployment should remain inexpensive and require little maintenance.
 - Canonical URLs must work with the current Workers domain and a future custom domain.
 
-## Implementation
+## Deployment behavior
 
 Astro builds the repository into static HTML. Dynamic-looking routes such as project
 and post details are generated from content entries during the build. The configured
 `SITE_URL` is shared by Astro, RSS, robots, tests, and production validation so one
 domain change updates every generated URL.
-
-The gist index required the most interaction work. Each entry keeps a native link for
-normal browser behavior while code, references, and copy controls remain independently
-interactive. Tags become search buttons when JavaScript is available and remain plain
-labels when it is not.
 
 ![The mobile gist index filtered to the curl tag with one matching result.](../../assets/projects/notsoosleepy-blog-platform/gists-mobile.png)
 
@@ -75,6 +192,29 @@ The deployment pipeline produces more than pages:
 - `/sitemap-index.xml` and `/robots.txt` expose public routes to crawlers.
 - Canonical, Open Graph, and Twitter metadata are generated through the shared layout.
 - `npm run check:site` validates the live deployment and linked resources.
+
+Local and deployed verification intentionally answer different questions. `npm run
+test:e2e` builds the site and exercises browser behavior against the generated output;
+`npm run check:site` makes network requests against the configured production origin.
+
+```json
+{
+  "scripts": {
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "check:site": "node scripts/check-site.mjs",
+    "test:e2e": "npm run build && playwright test"
+  }
+}
+```
+
+The browser suite checks route rendering, gist interactions, metadata, discovery files,
+and responsive evidence images. The production checker follows deployed assets and
+external references, validates canonical HTTPS URLs, and fails on unexpected response
+statuses.
+
+[View the pinned verification scripts](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/package.json#L10-L15),
+[production checker](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/scripts/check-site.mjs), and
+[gist browser tests](https://github.com/notsooSleepy/blog-site/blob/d94fffa14c0e88e12c6894cb267f3b4ea9c50dab/tests/e2e/gists.spec.ts).
 
 ## Decisions and tradeoffs
 
@@ -133,7 +273,7 @@ Result (23 files):
 - 0 warnings
 - 0 hints
 
-20 passed
+All Playwright tests passed.
 ```
 
 The production checker verifies core pages, discovery files, generated assets, canonical

@@ -75,3 +75,37 @@ test("project evidence images load within the mobile viewport", async ({ page })
     if (box) expect(box.x + box.width).toBeLessThanOrEqual(390);
   }
 });
+
+test("project explains the codebase with pinned source links", async ({ page }) => {
+  await page.goto("/projects/notsoosleepy-blog-platform");
+
+  const article = page.locator("article");
+  await expect(article.getByRole("heading", { name: "Codebase walkthrough" })).toBeVisible();
+
+  for (const heading of [
+    "Content is a typed input",
+    "Detail routes are generated at build time",
+    "The shared layout owns cross-cutting behavior",
+    "Interactivity and verification stay layered"
+  ]) {
+    await expect(article.getByRole("heading", { name: heading })).toBeVisible();
+  }
+
+  const sourceRevision = "d94fffa14c0e88e12c6894cb267f3b4ea9c50dab";
+  const sourcePaths = [
+    "src/content.config.ts",
+    "src/pages/projects/%5Bslug%5D.astro",
+    "src/layouts/BaseLayout.astro",
+    "src/pages/gists/index.astro",
+    "package.json",
+    "scripts/check-site.mjs",
+    "tests/e2e/gists.spec.ts"
+  ];
+
+  for (const sourcePath of sourcePaths) {
+    const sourceLinks = article.locator(
+      `a[href^="https://github.com/notsooSleepy/blog-site/blob/${sourceRevision}/${sourcePath}"]`
+    );
+    expect(await sourceLinks.count()).toBeGreaterThanOrEqual(1);
+  }
+});
