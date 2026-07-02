@@ -50,3 +50,28 @@ test("footer links point to the public profiles and RSS feed", async ({ page }) 
     "/rss.xml"
   );
 });
+
+test("project evidence images load within the mobile viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/projects/notsoosleepy-blog-platform");
+
+  const images = page.locator("article img");
+  const imageCount = await images.count();
+  expect(imageCount).toBeGreaterThanOrEqual(2);
+
+  for (let index = 0; index < imageCount; index += 1) {
+    const image = images.nth(index);
+    await image.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        image.evaluate((element) =>
+          element instanceof HTMLImageElement ? element.naturalWidth : 0
+        )
+      )
+      .toBeGreaterThan(0);
+
+    const box = await image.boundingBox();
+    expect(box).not.toBeNull();
+    if (box) expect(box.x + box.width).toBeLessThanOrEqual(390);
+  }
+});

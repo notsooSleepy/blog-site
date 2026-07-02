@@ -16,6 +16,10 @@ The deployed site is available at
 [blog-site.runcorx.workers.dev](https://blog-site.runcorx.workers.dev), and the source
 is public on [GitHub](https://github.com/notsooSleepy/blog-site).
 
+![The notsoosleepy homepage showing the site navigation, introduction, latest post, and project card.](../../assets/projects/notsoosleepy-blog-platform/homepage-desktop.png)
+
+<p class="media-caption">The desktop homepage keeps the current work and latest writing visible without a separate landing page.</p>
+
 ## Architecture
 
 The site uses Astro's static output. Markdown and JSON content pass through typed
@@ -60,6 +64,10 @@ The gist index required the most interaction work. Each entry keeps a native lin
 normal browser behavior while code, references, and copy controls remain independently
 interactive. Tags become search buttons when JavaScript is available and remain plain
 labels when it is not.
+
+![The mobile gist index filtered to the curl tag with one matching result.](../../assets/projects/notsoosleepy-blog-platform/gists-mobile.png)
+
+<p class="media-caption">Tag filters update the searchable gist index on a narrow mobile viewport without widening the page.</p>
 
 The deployment pipeline produces more than pages:
 
@@ -125,11 +133,12 @@ Result (23 files):
 - 0 warnings
 - 0 hints
 
-19 passed
+20 passed
 ```
 
-The production checker currently verifies nine pages, three discovery files, generated
-assets, canonical HTTPS URLs, profile links, and Markdown references:
+The production checker verifies core pages, discovery files, generated assets, canonical
+HTTPS URLs, profile links, and Markdown references. The last run before embedding the
+project screenshots reported:
 
 ```text
 PASS checked 9 pages, 3 discovery files, and 25 linked resources

@@ -84,19 +84,19 @@
             },
             {
               "title": "add evidence: source, screenshots, output, or a live demo",
-              "done": false
+              "done": true
             },
             {
               "title": "recapture the corrected mobile gist screenshot",
-              "done": false
+              "done": true
             },
             {
               "title": "embed project screenshots with alt text and captions",
-              "done": false
+              "done": true
             },
             {
               "title": "add responsive project image styles and verify desktop and mobile",
-              "done": false
+              "done": true
             }
           ]
         }

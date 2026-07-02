@@ -311,6 +311,22 @@ h3 {
   overflow-wrap: anywhere;
 }
 
+.rendered-content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 28px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.rendered-content .media-caption {
+  margin: 8px 0 28px;
+  color: var(--faint);
+  font-size: 0.85rem;
+}
+
 .rendered-content pre {
   overflow-x: auto;
   margin: 24px 0;
